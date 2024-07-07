@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["master"]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Chinese Simplified wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/chinese_simplified.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/chinese_simplified.txt)
+
+      - name: Chinese Traditional diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/chinese_traditional.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/chinese_traditional.txt)
+
+      - name: Czech diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/czech.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/czech.txt)
+
+      - name: English wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/english.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt)
+
+      - name: French wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/french.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/french.txt)
+
+      - name: Italian wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/italian.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/italian.txt)
+
+      - name: Japanese wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/japanese.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/japanese.txt)
+
+      - name: Korean wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/korean.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/korean.txt)
+
+      - name: Portuguese wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/portuguese.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/portuguese.txt)
+
+      - name: Russian wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/russian.txt <(curl  https://raw.githubusercontent.com/trezor/python-mnemonic/master/src/mnemonic/wordlist/russian.txt)
+
+      - name: Spanish wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/spanish.txt <(curl https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/spanish.txt)
+
+      - name: Turkish wordlist diff
+        shell: bash
+        run: diff ./Sources/BIP39/Resources/turkish.txt <(curl  https://raw.githubusercontent.com/trezor/python-mnemonic/master/src/mnemonic/wordlist/turkish.txt)
+
+  test:
+    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        swift: [ "5.4", "5.10" ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Swift setup
+        uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
+        with:
+          swift-version: ${{ matrix.swift }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: swift build
+
+      - name: Run tests
+        run: swift test
