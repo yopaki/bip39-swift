@@ -3,6 +3,7 @@
 ![Wordlist diff](https://github.com/yopaki/bip39-swift/actions/workflows/wordlists.yaml/badge.svg)
 ![Test Vectors diff](https://github.com/yopaki/bip39-swift/actions/workflows/test-vectors.yaml/badge.svg)
 ![Tests diff](https://github.com/yopaki/bip39-swift/actions/workflows/tests.yaml/badge.svg)
+[![codecov](https://codecov.io/gh/yopaki/bip39-swift/graph/badge.svg?token=AEBXFTVBBD)](https://codecov.io/gh/yopaki/bip39-swift)
 
 Swift implementation without dependencies of Trezor's [`python-mnemonic`](https://github.com/trezor/python-mnemonic/tree/master), i.e. [BIP-0039](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki).
 
