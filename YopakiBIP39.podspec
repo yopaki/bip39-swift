@@ -15,8 +15,8 @@ CSwift implementation without dependencies of Trezor\'s python-mnemonic.
 
   s.swift_version    = '5.4'
 
-  base_platforms     = { :ios => '13', :osx => '10.15', :tvos => '12' }
-  s.platforms        = base_platforms.merge({ :watchos => '6.0' })
+  base_platforms     = { :ios => '13', :osx => '10.15', :tvos => '13' }
+  s.platforms        = base_platforms.merge({ :watchos => '7.0' })
 
   s.module_name      = 'BIP39'
 

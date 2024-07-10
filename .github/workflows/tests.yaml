@@ -13,14 +13,12 @@ concurrency:
 
 jobs:
   test:
-    name: Build and test (macOS ${{matrix.test.machine}}, Xcode ${{ matrix.test.xcode }})
+    name: Build and test (macOS ${{matrix.tests.machine}}, Xcode ${{ matrix.tests.xcode }})
     strategy:
       matrix:
         tests:
-          - xcode: '14.2'
-            machine: macos-12
-          - xcode: '14.3.1'
-            machine: macos-13
+          - machine: macos-14
+            xcode: [ "14.3.1", "15.0.1", "15.4" ]
     runs-on: ${{ matrix.tests.machine }}
     steps:
       - name: Checkout repo
@@ -32,13 +30,13 @@ jobs:
       - name: Build and Test SPM
         run: swift test --enable-code-coverage
 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Update Cocoa Pods repo
         run: pod repo update
 
       - name: Build and Test CocoaPods
         run: pod lib lint --allow-warnings --fail-fast
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
