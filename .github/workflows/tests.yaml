@@ -13,19 +13,18 @@ concurrency:
 
 jobs:
   test:
-    name: Build and test (macOS ${{matrix.tests.machine}}, Xcode ${{ matrix.tests.xcode }})
+    name: Build and test (macOS ${{matrix.macos}}, Xcode ${{ matrix.xcode }})
     strategy:
       matrix:
-        tests:
-          - machine: macos-14
-            xcode: [ "14.3.1", "15.0.1", "15.4" ]
-    runs-on: ${{ matrix.tests.machine }}
+        macos: [ "macos-14" ]
+        xcode: [ "14.3.1", "15.0.1", "15.4" ]
+    runs-on: ${{ matrix.macos }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.tests.xcode }}.app
+        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
 
       - name: Build and Test SPM
         run: swift test --enable-code-coverage
