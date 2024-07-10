@@ -22,8 +22,8 @@ Swift implementation without dependencies of Trezor\'s python-mnemonic.
 
   s.source_files     = 'Sources/BIP39/**/*.swift'
   s.resource_bundles = {
-    'BIP39' => ["BIP39/Resources/*.txt"],
-    'BIP39Tests' => ["BIP39Tests/Resources/*.json"]
+    'BIP39' => ["Resources/*.txt"],
+    'BIP39Tests' => ["Resources/*.json"]
   }
 
   s.test_spec 'Tests' do |ts|
