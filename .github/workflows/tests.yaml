@@ -29,10 +29,14 @@ jobs:
       - name: Build and Test SPM
         run: swift test --enable-test-discovery --enable-code-coverage
 
+      - name: Prepare Code Coverage
+        run: xcrun llvm-cov export -format="lcov" .build/debug/YopakiBIP39PackageTests.xctest/Contents/MacOS/YopakiBIP39PackageTests  -instr-profile .build/debug/codecov/default.profdata > info.lcov
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: info.lcov
 
       - name: Update Cocoa Pods repo
         run: pod repo update
