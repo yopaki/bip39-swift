@@ -13,32 +13,33 @@ concurrency:
 
 jobs:
   test:
-    name: Build and test (Swift ${{ matrix.swift }} on ${{ matrix.os }})
+    name: Build and test (macOS ${{matrix.macos}}, Xcode ${{ matrix.xcode }})
     strategy:
       matrix:
-        tests:
-          - xcode: '14.2'
-            machine: macos-12
-          - xcode: '14.3.1'
-            machine: macos-13
-    runs-on: ${{ matrix.tests.machine }}
+        macos: [ "macos-14" ]
+        xcode: [ "14.3.1", "15.0.1", "15.4" ]
+    runs-on: ${{ matrix.macos }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.tests.xcode }}.app
+        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
 
       - name: Build and Test SPM
-        run: swift test --enable-code-coverage
+        run: swift test --enable-test-discovery --enable-code-coverage
+
+      - name: Prepare Code Coverage
+        run: xcrun llvm-cov export -format="lcov" .build/debug/YopakiBIP39PackageTests.xctest/Contents/MacOS/YopakiBIP39PackageTests  -instr-profile .build/debug/codecov/default.profdata > info.lcov
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: info.lcov
 
       - name: Update Cocoa Pods repo
         run: pod repo update
 
       - name: Build and Test CocoaPods
         run: pod lib lint --allow-warnings --fail-fast
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}

@@ -7,7 +7,7 @@ let package = Package(
     name: "YopakiBIP39",
     platforms: [
         .macOS(.v10_15),
-        .iOS(.v12),
+        .iOS(.v13),
         .tvOS(.v12),
         .watchOS(.v6),
     ],
