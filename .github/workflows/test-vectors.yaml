@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["master"]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  diff-test-vectors:
+    name: Test vector diff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: BIP39 JP test vectors
+        shell: bash
+        run: diff ./Tests/BIP39Tests/Resources/test_JP_BIP39.json <(curl https://raw.githubusercontent.com/bip32JP/bip32JP.github.io/master/test_JP_BIP39.json)
+
+      - name: Trezor's test vectors
+        shell: bash
+        run: diff ./Tests/BIP39Tests/Resources/vectors.json <(curl https://raw.githubusercontent.com/trezor/python-mnemonic/master/vectors.json)

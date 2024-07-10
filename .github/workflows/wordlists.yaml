@@ -1,4 +1,4 @@
-name: CI
+name: Wordlist diff
 
 on:
   pull_request:
@@ -12,7 +12,8 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
-  diff:
+  diff-wordlists:
+    name: Wordlist diff
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -56,7 +57,7 @@ jobs:
 
       - name: Russian wordlist diff
         shell: bash
-        run: diff ./Sources/BIP39/Resources/russian.txt <(curl  https://raw.githubusercontent.com/trezor/python-mnemonic/master/src/mnemonic/wordlist/russian.txt)
+        run: diff ./Sources/BIP39/Resources/russian.txt <(curl https://raw.githubusercontent.com/trezor/python-mnemonic/master/src/mnemonic/wordlist/russian.txt)
 
       - name: Spanish wordlist diff
         shell: bash
@@ -64,26 +65,4 @@ jobs:
 
       - name: Turkish wordlist diff
         shell: bash
-        run: diff ./Sources/BIP39/Resources/turkish.txt <(curl  https://raw.githubusercontent.com/trezor/python-mnemonic/master/src/mnemonic/wordlist/turkish.txt)
-
-  test:
-    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest ]
-        swift: [ "5.4", "5.10" ]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Swift setup
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: ${{ matrix.swift }}
-
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Build
-        run: swift build
-
-      - name: Run tests
-        run: swift test
+        run: diff ./Sources/BIP39/Resources/turkish.txt <(curl https://raw.githubusercontent.com/trezor/python-mnemonic/master/src/mnemonic/wordlist/turkish.txt)

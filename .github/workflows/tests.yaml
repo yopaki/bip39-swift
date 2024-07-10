@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["master"]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  test:
+    name: Build and test (Swift ${{ matrix.swift }} on ${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        swift: [ "5.4", "5.10" ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Swift setup
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: ${{ matrix.swift }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: swift build
+
+      - name: Run tests
+        run: swift test
