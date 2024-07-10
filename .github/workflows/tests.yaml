@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   test:
-    name: Build and test (Swift ${{ matrix.swift }} on ${{ matrix.os }})
+    name: Build and test (macOS ${{matrix.test.machine}}, Xcode ${{ matrix.test.xcode }})
     strategy:
       matrix:
         tests:
