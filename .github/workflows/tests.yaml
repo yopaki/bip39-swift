@@ -30,7 +30,7 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_${{ matrix.tests.xcode }}.app
 
       - name: Build and Test SPM
-        run: swift test --enable-coverage
+        run: swift test --enable-code-coverage
 
       - name: Update Cocoa Pods repo
         run: pod repo update
