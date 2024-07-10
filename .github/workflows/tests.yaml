@@ -16,26 +16,24 @@ jobs:
     name: Build and test (Swift ${{ matrix.swift }} on ${{ matrix.os }})
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
-        swift: [ "5.4", "5.10" ]
-    runs-on: ${{ matrix.os }}
+        xcode: [ "14.2", "14.3.1" ]
+        machine: [ "macos-12", "macos-13" ]
+    runs-on: ${{ matrix.machine }}
     steps:
-      - name: Swift setup
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: ${{ matrix.swift }}
-
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Update packages
-        run: swift package update
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
 
-      - name: Build
-        run: swift build
+      - name: Build and Test SPM
+        run: swift test --enable-coverage
 
-      - name: Run tests
-        run: swift test --enable-code-coverage
+      - name: Update Cocoa Pods repo
+        run: pod repo update
+
+      - name: Build and Test CocoaPods
+        run: pod lib lint --allow-warnings --fail-fast
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
